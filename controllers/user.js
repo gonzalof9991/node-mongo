@@ -1,4 +1,4 @@
-const { response } = require('express');
+const {response} = require('express');
 const User = require('../models/user');
 const bcryptjs = require('bcryptjs');
 const {validationResult} = require("express-validator");
@@ -21,7 +21,7 @@ const getUsers = async (req, res = response) => {
 
 const postUsers = async (req, res = response) => {
     // Get data from body and destructure
-    const { name, email, password, role } = req.body;
+    const {name, email, password, role} = req.body;
     const user = new User(
         {
             name,
@@ -44,7 +44,7 @@ const postUsers = async (req, res = response) => {
 
 const putUsers = async (req, res = response) => {
     const id = req.params.id;
-    const { password, google, ...rest } = req.body;
+    const {password, google, ...rest} = req.body;
     // TODO validate against DB
     if (password) {
         // Encrypting password
@@ -58,13 +58,15 @@ const putUsers = async (req, res = response) => {
 
 const deleteUsers = async (req, res = response) => {
     const {id} = req.params;
+    const uid = req.uid;
+    const userAuth = req.user;
 
     // Delete from DB for state: false
     const user = await User.findByIdAndUpdate(id, {state: false});
     // Delete permanently from DB
-    // User.findByIdAndDelete(id);
+    User.findByIdAndDelete(id);
     res.status(201).json({
-        user
+        'message': 'User deleted successfully'
     });
 }
 
